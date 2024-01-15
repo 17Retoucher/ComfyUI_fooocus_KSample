@@ -27,6 +27,7 @@ from modules.lora import match_lora
 from comfy.lora import model_lora_keys_unet, model_lora_keys_clip
 import folder_paths  
 from comfy_extras.nodes_model_advanced import ModelSamplingDiscrete
+import latent_preview
 
 
 opEmptyLatentImage = EmptyLatentImage()
@@ -303,8 +304,6 @@ def ksampler(model, positive, negative, latent, seed=None, steps=30, cfg=7.0, sa
     sigma_min, sigma_max = minmax_sigmas[minmax_sigmas > 0].min(), minmax_sigmas.max()
     sigma_min = float(sigma_min.cpu().numpy())
     sigma_max = float(sigma_max.cpu().numpy())
-    print(f'[采样器] sigma_min = {sigma_min}, sigma_max = {sigma_max}')
-
     modules.patch.BrownianTreeNoiseSamplerPatched.global_init(
     latent['samples'].to(comfy.model_management.get_torch_device()),
     sigma_min, sigma_max, seed=seed, cpu=False)       
@@ -341,8 +340,9 @@ def ksampler(model, positive, negative, latent, seed=None, steps=30, cfg=7.0, sa
     #         y = previewer(x0, previewer_start + step, previewer_end)
     #     if callback_function is not None:
     #         callback_function(previewer_start + step, x0, x, previewer_end, y)
+    callback = latent_preview.prepare_callback(model, steps)
+    disable_pbar = not comfy.utils.PROGRESS_BAR_ENABLED
 
-    disable_pbar = False
     modules.sample_hijack.current_refiner = refiner
     modules.sample_hijack.refiner_switch_step = refiner_switch
     comfy.samplers.sample = modules.sample_hijack.sample_hacked
@@ -356,7 +356,7 @@ def ksampler(model, positive, negative, latent, seed=None, steps=30, cfg=7.0, sa
                                         start_step=0,
                                         last_step=steps,
                                         force_full_denoise=force_full_denoise, noise_mask=noise_mask,
-                                        callback=None,
+                                        callback=callback,
                                         disable_pbar=disable_pbar, seed=seed, sigmas=sigmas
                                         )
 

@@ -19,11 +19,11 @@ class FooocusKSampler:
                 "cfg": ("FLOAT", {"default": 4.0, "min": 0.0, "max": 100.0}),
                 "sampler_name": (comfy.samplers.KSampler.SAMPLERS, {"default": "dpmpp_2m_sde_gpu", }),
                 "scheduler": (comfy.samplers.KSampler.SCHEDULERS, {"default": "karras", }),                 
-                "denoise": ("FLOAT", {"default": 1.0, "min": 0, "max": 1.0, "step": 0.01}),
+                "denoise": ("FLOAT", {"default": 1.0, "min": 0, "max": 1.0, "step": 0.1}),                 
+                "adaptive_cfg":("FLOAT", {"default": 7, "min": 0.0, "max": 100.0}), 
                 "sharpness": ("FLOAT", {"default": 2.0, "min": 0.0, "max": 100.0}),  
-                "adaptive_cfg":("FLOAT", {"default": 7, "min": 0.0, "max": 100.0}),  
-                "adm_scaler_positive":  ("FLOAT", {"default": 1.5, "min": 0.0, "max": 3.0}),                
-                "adm_scaler_negative":  ("FLOAT", {"default": 0.8, "min": 0.0, "max": 3.0}),                
+                "adm_scaler_positive":  ("FLOAT", {"default": 1.5, "min": 0.0, "max": 3.0,"step":0.1}),                
+                "adm_scaler_negative":  ("FLOAT", {"default": 0.8, "min": 0.0, "max": 3.0,"step":0.1}),                
                 "adm_scaler_end":  ("FLOAT", {"default": 0.3, "min": 0.0, "max": 1.0,"step":0.1}), 
             }
         }    

@@ -478,6 +478,15 @@ def build_loaded(module, loader_name):
     setattr(module, loader_name, loader)
     return
 
+old_load_models_gpu = comfy.model_management.load_models_gpu
+old_calculate_weight=comfy.model_patcher.ModelPatcher.calculate_weight
+old_ControlNetforward=comfy.cldm.cldm.ControlNet.forward
+old_UNetModelforward=comfy.ldm.modules.diffusionmodules.openaimodel.UNetModel.forward
+old_encode_adm= comfy.model_base.SDXL.encode_adm
+old_KSamplerX0Inpaintforward=comfy.samplers.KSamplerX0Inpaint.forward
+old_BrownianTreeNoiseSampler=comfy.k_diffusion.sampling.BrownianTreeNoiseSampler
+old_sampling_function=  comfy.samplers.sampling_function
+
 
 def patch_all():
     if comfy.model_management.directml_enabled:
@@ -490,6 +499,8 @@ def patch_all():
     if not hasattr(comfy.model_management, 'load_models_gpu_origin'):
         comfy.model_management.load_models_gpu_origin = comfy.model_management.load_models_gpu
 
+
+
     comfy.model_management.load_models_gpu = patched_load_models_gpu
     comfy.model_patcher.ModelPatcher.calculate_weight = calculate_weight_patched
     comfy.cldm.cldm.ControlNet.forward = patched_cldm_forward
@@ -499,9 +510,24 @@ def patch_all():
     comfy.k_diffusion.sampling.BrownianTreeNoiseSampler = BrownianTreeNoiseSamplerPatched
     comfy.samplers.sampling_function = patched_sampling_function
 
+
+
+
     warnings.filterwarnings(action='ignore', module='torchsde')
 
     build_loaded(safetensors.torch, 'load_file')
     build_loaded(torch, 'load')
 
     return
+def unpatch_all():
+    comfy.model_management.load_models_gpu = old_load_models_gpu
+    comfy.model_patcher.ModelPatcher.calculate_weight = old_calculate_weight
+    comfy.cldm.cldm.ControlNet.forward = old_ControlNetforward
+    comfy.ldm.modules.diffusionmodules.openaimodel.UNetModel.forward = old_UNetModelforward
+    comfy.model_base.SDXL.encode_adm = old_encode_adm
+    comfy.samplers.KSamplerX0Inpaint.forward = old_KSamplerX0Inpaintforward
+    comfy.k_diffusion.sampling.BrownianTreeNoiseSampler = old_BrownianTreeNoiseSampler
+    comfy.samplers.sampling_function = old_sampling_function
+
+    return
+

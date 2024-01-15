@@ -12,7 +12,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SDXLPromptStyler": "Fooocus KSample",
+    "Fooocus_KSample": "Fooocus KSample",
 }
 
 

@@ -30,7 +30,7 @@ class FooocusKSampler:
 
     RETURN_TYPES = ("LATENT",)
     FUNCTION = 'Fooocus_KSampler'
-    CATEGORY = 'FooocusKSampler'
+    CATEGORY = 'FooocusKSampler_17Reoucher'
 
     def Fooocus_KSampler(self,model,positive,negative,latent_image,seed, steps, cfg,sampler_name, scheduler,denoise,
                         sharpness,adaptive_cfg,adm_scaler_positive,adm_scaler_negative,adm_scaler_end):
@@ -51,6 +51,7 @@ class FooocusKSampler:
                       scheduler=scheduler,
                       denoise=denoise,                   
                       )
+        patch.unpatch_all()
         return (latent,)
         
         

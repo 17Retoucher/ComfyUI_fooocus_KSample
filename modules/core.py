@@ -1,6 +1,6 @@
-from modules.patch import patch_all
+# from modules.patch import patch_all
 
-patch_all()
+# patch_all()
 
 
 import os

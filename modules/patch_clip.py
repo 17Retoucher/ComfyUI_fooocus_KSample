@@ -185,6 +185,11 @@ def patched_ClipVisionModel_encode_image(self, image):
 
     return outputs
 
+old_encode_token_weights=comfy.sd1_clip.ClipTokenWeightEncoder.encode_token_weights
+old_SDClipModel__init__=comfy.sd1_clip.SDClipModel.__init__
+old_SDClipModel_forward=comfy.sd1_clip.SDClipModel.forward
+old_ClipVisionModel___init__=comfy.clip_vision.ClipVisionModel.__init__
+old_ClipVisionModel_encode_image=comfy.clip_vision.ClipVisionModel.encode_image
 
 def patch_all_clip():
     comfy.sd1_clip.ClipTokenWeightEncoder.encode_token_weights = patched_encode_token_weights
@@ -193,3 +198,14 @@ def patch_all_clip():
     comfy.clip_vision.ClipVisionModel.__init__ = patched_ClipVisionModel__init__
     comfy.clip_vision.ClipVisionModel.encode_image = patched_ClipVisionModel_encode_image
     return
+
+def unpatch_all_clip():
+    comfy.sd1_clip.ClipTokenWeightEncoder.encode_token_weights = old_encode_token_weights
+    comfy.sd1_clip.SDClipModel.__init__ = old_SDClipModel__init__
+    comfy.sd1_clip.SDClipModel.forward = old_SDClipModel_forward
+    comfy.clip_vision.ClipVisionModel.__init__ = old_ClipVisionModel___init__
+    comfy.clip_vision.ClipVisionModel.encode_image = old_ClipVisionModel_encode_image
+
+
+    return
+

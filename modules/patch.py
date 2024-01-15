@@ -25,8 +25,8 @@ import modules.constants as constants
 from comfy.samplers import calc_cond_uncond_batch
 from comfy.k_diffusion.sampling import BatchedBrownianTree
 from comfy.ldm.modules.diffusionmodules.openaimodel import forward_timestep_embed, apply_control
-from modules.patch_precision import patch_all_precision
-from modules.patch_clip import patch_all_clip
+from modules.patch_precision import patch_all_precision,unpatch_all_precision
+from modules.patch_clip import patch_all_clip,unpatch_all_clip
 
 
 sharpness = 2.0
@@ -520,6 +520,8 @@ def patch_all():
 
     return
 def unpatch_all():
+    unpatch_all_precision()
+    unpatch_all_clip()
     comfy.model_management.load_models_gpu = old_load_models_gpu
     comfy.model_patcher.ModelPatcher.calculate_weight = old_calculate_weight
     comfy.cldm.cldm.ControlNet.forward = old_ControlNetforward
@@ -528,6 +530,7 @@ def unpatch_all():
     comfy.samplers.KSamplerX0Inpaint.forward = old_KSamplerX0Inpaintforward
     comfy.k_diffusion.sampling.BrownianTreeNoiseSampler = old_BrownianTreeNoiseSampler
     comfy.samplers.sampling_function = old_sampling_function
+    
 
     return
 

@@ -53,8 +53,15 @@ def patched_register_schedule(self, given_betas=None, beta_schedule="linear", ti
     self.set_sigmas(sigmas)
     return
 
-
+old_timestep_embedding=comfy.ldm.modules.diffusionmodules.openaimodel.timestep_embedding
+old__register_schedule=comfy.model_sampling.ModelSamplingDiscrete._register_schedule
 def patch_all_precision():
     comfy.ldm.modules.diffusionmodules.openaimodel.timestep_embedding = patched_timestep_embedding
     comfy.model_sampling.ModelSamplingDiscrete._register_schedule = patched_register_schedule
+    return
+
+def unpatch_all_precision():
+    comfy.ldm.modules.diffusionmodules.openaimodel.timestep_embedding = old_timestep_embedding
+    comfy.model_sampling.ModelSamplingDiscrete._register_schedule = old__register_schedule
+
     return
